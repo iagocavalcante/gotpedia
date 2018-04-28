@@ -97,7 +97,6 @@
       padding: 5px;
       margin: 5px;
       width: 400px;
-      line-height: 50px;
       font-weight: bold;
       font-size: 0.9em;
       text-align: center;
@@ -115,10 +114,13 @@
       padding: 10px;
       text-decoration: none;
       color: tomato;
+      width: 60px;
+      text-align: center;
+      cursor: pointer;
     }
 
     .button:hover {
-      background-color: #56E39F
+      background-color: #56E39F;
     }
 
     .img_class {
@@ -153,9 +155,9 @@
   </header>
   <main>
     <section>
-      <div class="container">
-        <a class="button" href="#">Previous</a>  
-        <a class="button" href="#">Next</a>  
+      <div class="container" id="pagination-top-prev">
+      </div>
+      <div class="container" id="pagination-top-next">
       </div>
     </section>
     <section>
@@ -163,9 +165,9 @@
       </div>
     </section>
     <section>
-      <div class="container">
-        <a class="button" href="#">Previous</a>  
-        <a class="button" href="#">Next</a>  
+      <div class="container" id="pagination-bottom-prev">
+      </div>
+      <div class="container" id="pagination-bottom-next">
       </div>
     </section>
   </main>
@@ -181,10 +183,11 @@
     getCharacters()
   })
 
-  const getCharacters = (page = '', pageSize = '') => {
-    axios.get(`https://www.anapioficeandfire.com/api/characters${page ? `?page=${page}&pageSize=${pageSize}` : ''}`)
+  const getCharacters = ( url = '' ) => {
+    axios.get(`${url ? url : `https://www.anapioficeandfire.com/api/characters`}`)
       .then(response => {
-        console.log(response.headers.link.indexOf('next'))
+        checkNext( response.headers.link )
+        checkPrevious( response.headers.link )
         aboutCharacter( response.data )
       })
       .catch(err => {
@@ -192,7 +195,7 @@
       })
   }
 
-  const aboutCharacter = (dataFromApi) => {
+  const aboutCharacter = ( dataFromApi ) => {
     const divListCharacter = document.createElement('div')
     divListCharacter.setAttribute('id', 'listCharacter')
     divListCharacter.setAttribute('class', 'flex-container row')
@@ -211,12 +214,16 @@
       nodeImage.setAttribute('class', 'img_class')
       const name = document.createElement('p')
       const gender = document.createElement('p')
-      name.innerHTML = `${character.name ? character.name : 'Name not found'}`
-      gender.innerHTML = `${character.gender ? character.gender === 'male' ? `👨` : `👩` : 'Gender not found'}`
+      const alias = document.createElement('p')
+      console.log(character)
+      name.innerHTML = `${character.name ? `Name: ${character.name}` : 'Name not found'}`
+      gender.innerHTML += `${character.gender ? character.gender === 'male' ? `Gender: 👨` : `Gender: 👩` : 'Gender not found'}`
+      alias.innerHTML += `${character.aliases.length > 0 ? `Alias: ${character.aliases[0]}` : "Don't found alias"}`
       divImage.appendChild(nodeImage)
       divContainer.appendChild(divImage)
       divContainer.appendChild(name)
       divContainer.appendChild(gender)
+      divContainer.appendChild(alias)
       // divContainer.appendChild(caption)
       // divContainer.appendChild(date)
       listCharacter.appendChild(divContainer)
@@ -224,19 +231,61 @@
   }
 
   const checkNext = ( headersLink ) => {
-
+    headersLink.indexOf('next') > -1 ? createNext( headersLink ) : false
   }
   
-  const checkPrevious = ( headersLink ) => {
-
+  const checkPrevious = ( headersLink, url ) => {
+    headersLink.indexOf('prev') > -1 ? createPrevious( headersLink ) : removePrev()
   }
 
-  const createNext = () => {
-    
+  const createNext = ( url ) => {
+    const nextLink = splitHeaderLinkNext( url )
+    const divPaginationTop = document.querySelector('#pagination-top-next')
+    const divPaginationBottom = document.querySelector('#pagination-bottom-next')
+    divPaginationBottom.innerHTML = '<a id="nextPage" class="button">Next ➡️</a>'
+    divPaginationTop.innerHTML = '<a id="nextPage" class="button">Next ➡️</a>'
+    const nextPage = document.querySelector('#nextPage')
+    nextPage.addEventListener('click', () => {
+      getCharacters( nextLink )
+    })
   }
   
-  const createPrevious = () => {
+  const createPrevious = ( url ) => {
+    const prevLink = splitHeaderLinkPrev( url )
+    const divPaginationTop = document.querySelector('#pagination-top-prev')
+    const divPaginationBottom = document.querySelector('#pagination-bottom-next')
+    divPaginationBottom.innerHTML = '<a id="prevPage" class="button">Prev ⬅️</a>'
+    divPaginationTop.innerHTML = '<a id="prevPage" class="button">Prev ⬅️</a>'
+    const prevPage = document.querySelector('#prevPage')
+    prevPage.addEventListener('click', () => {
+      getCharacters( prevLink )
+    })
+  }
 
+  const splitHeaderLinkNext = ( headerLink ) => {
+    const arrayLinks = headerLink.split(',')
+    const extractUrl = arrayLinks[0].split('<')[1].split('>')
+    return extractUrl[0]
+  }
+
+  const splitHeaderLinkPrev = ( headerLink ) => {
+    const arrayLinks = headerLink.split(',')
+    const extractUrl = arrayLinks[1].split('<')[1].split('>')
+    return extractUrl[0]
+  }
+
+  const removeNext = () => {
+    const paginationTop = document.querySelector('#pagination-top-next')
+    const paginationBottom = document.querySelector('#pagination-bottom-next')
+    if (paginationTop.hasChildNodes()) paginationTop.removeChild(paginationTop.firstChild)
+    if (paginationBottom.hasChildNodes()) paginationBottom.removeChild(paginationBottom.firstChild)
+  }
+  
+  const removePrev = () => {
+    const paginationTop = document.querySelector('#pagination-top-prev')
+    const paginationBottom = document.querySelector('#pagination-bottom-prev')
+    if (paginationTop.hasChildNodes()) paginationTop.removeChild(paginationTop.firstChild)
+    if (paginationBottom.hasChildNodes()) paginationBottom.removeChild(paginationBottom.firstChild)
   }
 
 </script>
