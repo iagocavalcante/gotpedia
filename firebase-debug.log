@@ -1,0 +1,21 @@
+[debug] [2018-04-28T01:55:17.606Z] ----------------------------------------------------------------------
+[debug] [2018-04-28T01:55:17.609Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Tron\AppData\Roaming\npm\node_modules\firebase-tools\bin\firebase init
+[debug] [2018-04-28T01:55:17.609Z] CLI Version:   3.18.4
+[debug] [2018-04-28T01:55:17.609Z] Platform:      win32
+[debug] [2018-04-28T01:55:17.610Z] Node Version:  v9.3.0
+[debug] [2018-04-28T01:55:17.611Z] Time:          Fri Apr 27 2018 22:55:17 GMT-0300 (Hora Padrão de Buenos Aires)
+[debug] [2018-04-28T01:55:17.611Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-04-28T01:55:17.630Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase"]
+[debug] [2018-04-28T01:55:17.631Z] > authorizing via signed-in user
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\Tron\Desktop\GoTipedia
+

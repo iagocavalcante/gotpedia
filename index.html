@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>GoTPedia</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css?family=Roboto');
+
+    * {
+      font-family: 'Roboto', sans-serif;
+      background-color: #465775;
+    }
+
+    .title-element {
+      text-align: center;
+      color: #EF6F6C;
+    }
+
+    .menu {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #5B6C5D;
+      width: 100%;
+      display: table;
+      text-align: center;
+    }
+
+    .menu-item {
+      float: none;
+      display: inline-block;
+    }
+
+    .menu-item__link {
+      display: block;
+      list-style: none;
+      padding: 14px 16px;
+      text-align: center;
+      text-decoration: none;
+      color: #EF6F6C;
+    }
+
+    li a:hover {
+      background-color: #56E39F;
+    }
+
+    .footer {
+      position: fixed;
+      margin-top: auto;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center
+    }
+
+    .box {
+      margin-top: 20px;
+      width: auto;
+      height: auto;
+    }
+
+    @media screen and (min-width: 769px) {
+      .box {
+        margin-top: 20px;
+        width: 450px;
+        height: 100px;
+      }
+    }
+
+    .flex-container {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      -ms-box-orient: horizontal;
+      display: -webkit-box;
+      display: -moz-box;
+      display: -ms-flexbox;
+      display: -moz-flex;
+      display: -webkit-flex;
+      display: flex;
+    }
+
+    .row {
+      -webkit-flex-direction: row;
+      flex-direction: row;
+      flex-wrap: wrap
+    }
+
+    .flex-item {
+      padding: 5px;
+      margin: 5px;
+      width: 400px;
+      line-height: 50px;
+      font-weight: bold;
+      font-size: 0.9em;
+      text-align: center;
+    }
+
+    .flex-body {
+      max-height: 400px;
+    }
+
+    .button {
+      margin-top: 20px;
+      border: 1px tomato solid;
+      border-radius: 5px;
+      margin-left: 5px;
+      padding: 10px;
+      text-decoration: none;
+      color: tomato;
+    }
+
+    .button:hover {
+      background-color: #56E39F
+    }
+
+    .img_class {
+      width: 250px;
+      height: 250px;
+      background-size: 100% 100%;
+    }
+
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1 class="title-element">🏰 GoTPedia 🏰</h1>
+    <ul class="menu">
+      <li class="menu-item">
+        <a class="menu-item__link" href="#">
+           📚Books
+        </a>
+      </li>
+      <li class="menu-item">
+        <a class="menu-item__link" href="#">
+           🙍Characters
+        </a>
+      </li>
+      <li class="menu-item">
+        <a class="menu-item__link" href="#">
+           🏘️Houses
+        </a>
+      </li>
+    </ul>
+  </header>
+  <main>
+    <section>
+      <div class="container">
+        <a class="button" href="#">Previous</a>  
+        <a class="button" href="#">Next</a>  
+      </div>
+    </section>
+    <section>
+      <div id="about-characters">
+      </div>
+    </section>
+    <section>
+      <div class="container">
+        <a class="button" href="#">Previous</a>  
+        <a class="button" href="#">Next</a>  
+      </div>
+    </section>
+  </main>
+  <footer class="footer">
+
+  </footer>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/locale/pt-br.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    getCharacters()
+  })
+
+  const getCharacters = (page = '', pageSize = '') => {
+    axios.get(`https://www.anapioficeandfire.com/api/characters${page ? `?page=${page}&pageSize=${pageSize}` : ''}`)
+      .then(response => {
+        console.log(response.headers.link.indexOf('next'))
+        aboutCharacter( response.data )
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+  const aboutCharacter = (dataFromApi) => {
+    const divListCharacter = document.createElement('div')
+    divListCharacter.setAttribute('id', 'listCharacter')
+    divListCharacter.setAttribute('class', 'flex-container row')
+    const aboutCharacter = document.querySelector('#about-characters')
+    if (aboutCharacter.hasChildNodes()) {
+      aboutCharacter.removeChild(aboutCharacter.firstChild)
+    }
+    aboutCharacter.appendChild(divListCharacter)
+    const listCharacter = document.querySelector('#listCharacter')
+    dataFromApi.forEach( ( character, index ) => {
+      const divContainer = document.createElement('div')
+      const divImage = document.createElement('div')
+      divContainer.setAttribute('class', 'flex-item')
+      const nodeImage = document.createElement('img')
+      nodeImage.setAttribute('src', 'https://images.pexels.com/photos/929831/pexels-photo-929831.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940')
+      nodeImage.setAttribute('class', 'img_class')
+      const name = document.createElement('p')
+      const gender = document.createElement('p')
+      name.innerHTML = `${character.name ? character.name : 'Name not found'}`
+      gender.innerHTML = `${character.gender ? character.gender === 'male' ? `👨` : `👩` : 'Gender not found'}`
+      divImage.appendChild(nodeImage)
+      divContainer.appendChild(divImage)
+      divContainer.appendChild(name)
+      divContainer.appendChild(gender)
+      // divContainer.appendChild(caption)
+      // divContainer.appendChild(date)
+      listCharacter.appendChild(divContainer)
+    })
+  }
+
+  const checkNext = ( headersLink ) => {
+
+  }
+  
+  const checkPrevious = ( headersLink ) => {
+
+  }
+
+  const createNext = () => {
+    
+  }
+  
+  const createPrevious = () => {
+
+  }
+
+</script>
+
+</html>
