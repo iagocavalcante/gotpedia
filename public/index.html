@@ -49,8 +49,8 @@
     }
 
     .footer {
-      position: fixed;
-      margin-top: auto;
+      margin: 0px auto;
+      width: 250px;
     }
 
     .container {
@@ -77,7 +77,6 @@
     .flex-container {
       padding: 0;
       margin: 0;
-      list-style: none;
       -ms-box-orient: horizontal;
       display: -webkit-box;
       display: -moz-box;
@@ -104,6 +103,7 @@
 
     .flex-body {
       max-height: 400px;
+      background-color: tomato;
     }
 
     .button {
@@ -121,12 +121,36 @@
 
     .button:hover {
       background-color: #56E39F;
+      cursor: pointer;
     }
 
     .img_class {
       width: 250px;
       height: 250px;
       background-size: 100% 100%;
+    }
+
+    .card {
+      box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+      border-radius: 5px;
+      transition: 0.3s;
+      width: 250px;
+      background-color: tomato;
+    }
+
+    .card:hover {
+      box-shadow: 0 8px 16px 0 rgba(255,255,255);
+    }
+
+    #about-characters {
+      padding-top: 20px;
+      padding-bottom: 20px;
+      margin: auto;
+      width: 88%;
+    }
+
+    .card-text {
+      background-color: tomato;
     }
 
   </style>
@@ -164,15 +188,9 @@
       <div id="about-characters">
       </div>
     </section>
-    <section>
-      <div class="container" id="pagination-bottom-prev">
-      </div>
-      <div class="container" id="pagination-bottom-next">
-      </div>
-    </section>
   </main>
-  <footer class="footer">
-
+  <footer>
+    <p class="footer">Developed by Iago Cavalcante</p>
   </footer>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
@@ -208,30 +226,30 @@
     dataFromApi.forEach( ( character, index ) => {
       const divContainer = document.createElement('div')
       const divImage = document.createElement('div')
-      divContainer.setAttribute('class', 'flex-item')
+      divContainer.setAttribute('class', 'card flex-item')
       const nodeImage = document.createElement('img')
       nodeImage.setAttribute('src', 'https://images.pexels.com/photos/929831/pexels-photo-929831.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940')
-      nodeImage.setAttribute('class', 'img_class')
+      nodeImage.setAttribute('class', 'img_class card-text')
       const name = document.createElement('p')
       const gender = document.createElement('p')
       const alias = document.createElement('p')
-      console.log(character)
+      name.setAttribute('class', 'card-text')
+      gender.setAttribute('class', 'card-text')
+      alias.setAttribute('class', 'card-text')
       name.innerHTML = `${character.name ? `Name: ${character.name}` : 'Name not found'}`
-      gender.innerHTML += `${character.gender ? character.gender === 'male' ? `Gender: 👨` : `Gender: 👩` : 'Gender not found'}`
-      alias.innerHTML += `${character.aliases.length > 0 ? `Alias: ${character.aliases[0]}` : "Don't found alias"}`
+      gender.innerHTML = `${character.gender ? character.gender === 'male' ? `Gender: 👨` : `Gender: 👩` : 'Gender not found'}`
+      alias.innerHTML = `${character.aliases.length > 0 ? `Alias: ${character.aliases[0]}` : "Alias not found"}`
       divImage.appendChild(nodeImage)
       divContainer.appendChild(divImage)
       divContainer.appendChild(name)
       divContainer.appendChild(gender)
       divContainer.appendChild(alias)
-      // divContainer.appendChild(caption)
-      // divContainer.appendChild(date)
       listCharacter.appendChild(divContainer)
     })
   }
 
   const checkNext = ( headersLink ) => {
-    headersLink.indexOf('next') > -1 ? createNext( headersLink ) : false
+    headersLink.indexOf('next') > -1 ? createNext( headersLink ) : removeNext()
   }
   
   const checkPrevious = ( headersLink, url ) => {
@@ -241,8 +259,6 @@
   const createNext = ( url ) => {
     const nextLink = splitHeaderLinkNext( url )
     const divPaginationTop = document.querySelector('#pagination-top-next')
-    const divPaginationBottom = document.querySelector('#pagination-bottom-next')
-    divPaginationBottom.innerHTML = '<a id="nextPage" class="button">Next ➡️</a>'
     divPaginationTop.innerHTML = '<a id="nextPage" class="button">Next ➡️</a>'
     const nextPage = document.querySelector('#nextPage')
     nextPage.addEventListener('click', () => {
@@ -253,9 +269,7 @@
   const createPrevious = ( url ) => {
     const prevLink = splitHeaderLinkPrev( url )
     const divPaginationTop = document.querySelector('#pagination-top-prev')
-    const divPaginationBottom = document.querySelector('#pagination-bottom-next')
-    divPaginationBottom.innerHTML = '<a id="prevPage" class="button">Prev ⬅️</a>'
-    divPaginationTop.innerHTML = '<a id="prevPage" class="button">Prev ⬅️</a>'
+    divPaginationTop.innerHTML = '<a id="prevPage" class="button">⬅️ Prev</a>'
     const prevPage = document.querySelector('#prevPage')
     prevPage.addEventListener('click', () => {
       getCharacters( prevLink )
@@ -276,16 +290,17 @@
 
   const removeNext = () => {
     const paginationTop = document.querySelector('#pagination-top-next')
-    const paginationBottom = document.querySelector('#pagination-bottom-next')
     if (paginationTop.hasChildNodes()) paginationTop.removeChild(paginationTop.firstChild)
-    if (paginationBottom.hasChildNodes()) paginationBottom.removeChild(paginationBottom.firstChild)
   }
   
   const removePrev = () => {
     const paginationTop = document.querySelector('#pagination-top-prev')
-    const paginationBottom = document.querySelector('#pagination-bottom-prev')
     if (paginationTop.hasChildNodes()) paginationTop.removeChild(paginationTop.firstChild)
-    if (paginationBottom.hasChildNodes()) paginationBottom.removeChild(paginationBottom.firstChild)
+  }
+
+  const destroyChild = ( idElement ) => {
+    const element = document.querySelector(`#${idElement}`)
+    if ( element.hasChildNodes() ) element.removeChild(element.firstChild)
   }
 
 </script>
