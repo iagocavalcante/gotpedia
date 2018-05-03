@@ -131,7 +131,7 @@
     }
 
     .card {
-      box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
       border-radius: 5px;
       transition: 0.3s;
       width: 250px;
@@ -139,7 +139,7 @@
     }
 
     .card:hover {
-      box-shadow: 0 8px 16px 0 rgba(255,255,255);
+      box-shadow: 0 8px 16px 0 rgba(255, 255, 255);
     }
 
     #about-characters {
@@ -153,6 +153,22 @@
       background-color: tomato;
     }
 
+    .table {
+      display: table;
+    }
+
+    .table-row {
+      display: table-row;
+    }
+
+    .table-cell {
+      display: table-cell;
+    }
+
+    .center {
+      margin: auto;
+      width: 50%;
+    }
   </style>
 </head>
 
@@ -178,11 +194,13 @@
     </ul>
   </header>
   <main>
-    <section>
-      <div class="container" id="pagination-top-prev">
-      </div>
-      <div class="container" id="pagination-top-next">
-      </div>
+    <section class="table center">
+      <section class="table-row center">
+        <div class="container table-cell" id="pagination-top-prev">
+        </div>
+        <div class="container table-cell" id="pagination-top-next">
+        </div>
+      </section>
     </section>
     <section>
       <div id="about-characters">
@@ -201,19 +219,19 @@
     getCharacters()
   })
 
-  const getCharacters = ( url = '' ) => {
+  const getCharacters = (url = '') => {
     axios.get(`${url ? url : `https://www.anapioficeandfire.com/api/characters`}`)
       .then(response => {
-        checkNext( response.headers.link )
-        checkPrevious( response.headers.link )
-        aboutCharacter( response.data )
+        checkNext(response.headers.link)
+        checkPrevious(response.headers.link)
+        aboutCharacter(response.data)
       })
       .catch(err => {
         console.log(err)
       })
   }
 
-  const aboutCharacter = ( dataFromApi ) => {
+  const aboutCharacter = (dataFromApi) => {
     const divListCharacter = document.createElement('div')
     divListCharacter.setAttribute('id', 'listCharacter')
     divListCharacter.setAttribute('class', 'flex-container row')
@@ -223,7 +241,7 @@
     }
     aboutCharacter.appendChild(divListCharacter)
     const listCharacter = document.querySelector('#listCharacter')
-    dataFromApi.forEach( ( character, index ) => {
+    dataFromApi.forEach((character, index) => {
       const divContainer = document.createElement('div')
       const divImage = document.createElement('div')
       divContainer.setAttribute('class', 'card flex-item')
@@ -248,41 +266,41 @@
     })
   }
 
-  const checkNext = ( headersLink ) => {
-    headersLink.indexOf('next') > -1 ? createNext( headersLink ) : removeNext()
-  }
-  
-  const checkPrevious = ( headersLink, url ) => {
-    headersLink.indexOf('prev') > -1 ? createPrevious( headersLink ) : removePrev()
+  const checkNext = (headersLink) => {
+    headersLink.indexOf('next') > -1 ? createNext(headersLink) : removeNext()
   }
 
-  const createNext = ( url ) => {
-    const nextLink = splitHeaderLinkNext( url )
+  const checkPrevious = (headersLink, url) => {
+    headersLink.indexOf('prev') > -1 ? createPrevious(headersLink) : removePrev()
+  }
+
+  const createNext = (url) => {
+    const nextLink = splitHeaderLinkNext(url)
     const divPaginationTop = document.querySelector('#pagination-top-next')
     divPaginationTop.innerHTML = '<a id="nextPage" class="button">Next ➡️</a>'
     const nextPage = document.querySelector('#nextPage')
     nextPage.addEventListener('click', () => {
-      getCharacters( nextLink )
+      getCharacters(nextLink)
     })
   }
-  
-  const createPrevious = ( url ) => {
-    const prevLink = splitHeaderLinkPrev( url )
+
+  const createPrevious = (url) => {
+    const prevLink = splitHeaderLinkPrev(url)
     const divPaginationTop = document.querySelector('#pagination-top-prev')
     divPaginationTop.innerHTML = '<a id="prevPage" class="button">⬅️ Prev</a>'
     const prevPage = document.querySelector('#prevPage')
     prevPage.addEventListener('click', () => {
-      getCharacters( prevLink )
+      getCharacters(prevLink)
     })
   }
 
-  const splitHeaderLinkNext = ( headerLink ) => {
+  const splitHeaderLinkNext = (headerLink) => {
     const arrayLinks = headerLink.split(',')
     const extractUrl = arrayLinks[0].split('<')[1].split('>')
     return extractUrl[0]
   }
 
-  const splitHeaderLinkPrev = ( headerLink ) => {
+  const splitHeaderLinkPrev = (headerLink) => {
     const arrayLinks = headerLink.split(',')
     const extractUrl = arrayLinks[1].split('<')[1].split('>')
     return extractUrl[0]
@@ -292,17 +310,16 @@
     const paginationTop = document.querySelector('#pagination-top-next')
     if (paginationTop.hasChildNodes()) paginationTop.removeChild(paginationTop.firstChild)
   }
-  
+
   const removePrev = () => {
     const paginationTop = document.querySelector('#pagination-top-prev')
     if (paginationTop.hasChildNodes()) paginationTop.removeChild(paginationTop.firstChild)
   }
 
-  const destroyChild = ( idElement ) => {
+  const destroyChild = (idElement) => {
     const element = document.querySelector(`#${idElement}`)
-    if ( element.hasChildNodes() ) element.removeChild(element.firstChild)
+    if (element.hasChildNodes()) element.removeChild(element.firstChild)
   }
-
 </script>
 
 </html>
