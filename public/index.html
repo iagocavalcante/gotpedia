@@ -169,6 +169,19 @@
       margin: auto;
       width: 50%;
     }
+
+    .hidden {
+      visibility: hidden
+    }
+
+    .toRight {
+      float: right;
+      margin-top: 20px;
+    }
+
+    .toLeft {
+      float: left;
+    }
   </style>
 </head>
 
@@ -196,9 +209,13 @@
   <main>
     <section class="table center">
       <section class="table-row center">
-        <div class="container table-cell" id="pagination-top-prev">
+        <div class="container table-cell hidden toRight" id="pagination-top-prev">
+          <a id="prevPage" class="button">⬅️ Prev</a>
+          <span style="display: none" id="prev-url"></span>
         </div>
         <div class="container table-cell" id="pagination-top-next">
+          <a id="nextPage" class="button">Next ➡️</a>
+          <span style="display: none" id="next-url"></span>
         </div>
       </section>
     </section>
@@ -216,6 +233,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/locale/pt-br.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
+    nextPage.addEventListener('click', () => {
+      getCharacters(document.getElementById('next-url').innerHTML)
+    })
+    prevPage.addEventListener('click', () => {
+      getCharacters(document.getElementById('prev-url').innerHTML)
+    })
     getCharacters()
   })
 
@@ -267,31 +290,41 @@
   }
 
   const checkNext = (headersLink) => {
-    headersLink.indexOf('next') > -1 ? createNext(headersLink) : removeNext()
+    headersLink.indexOf('next') > -1 ? createNext(headersLink) : hideNext()
   }
 
   const checkPrevious = (headersLink, url) => {
-    headersLink.indexOf('prev') > -1 ? createPrevious(headersLink) : removePrev()
+    headersLink.indexOf('prev') > -1 ? createPrevious(headersLink) : hidePrevious()
+  }
+
+  const hidePrevious = () => {
+    document.getElementById('pagination-top-prev').style.visibility = 'hidden'
+  }
+
+  const showPrevious = () => {
+    document.getElementById('pagination-top-prev').style.visibility = 'visible'
+  }
+
+  const hideNext = () => {
+    document.getElementById('pagination-top-next').style.visibility = 'hidden'
+  }
+
+  const showNext = () => {
+    document.getElementById('pagination-top-next').style.visibility = 'visible'
   }
 
   const createNext = (url) => {
+    showNext()
     const nextLink = splitHeaderLinkNext(url)
-    const divPaginationTop = document.querySelector('#pagination-top-next')
-    divPaginationTop.innerHTML = '<a id="nextPage" class="button">Next ➡️</a>'
     const nextPage = document.querySelector('#nextPage')
-    nextPage.addEventListener('click', () => {
-      getCharacters(nextLink)
-    })
+    document.getElementById('next-url').innerHTML = nextLink
   }
 
   const createPrevious = (url) => {
+    showPrevious()
     const prevLink = splitHeaderLinkPrev(url)
-    const divPaginationTop = document.querySelector('#pagination-top-prev')
-    divPaginationTop.innerHTML = '<a id="prevPage" class="button">⬅️ Prev</a>'
     const prevPage = document.querySelector('#prevPage')
-    prevPage.addEventListener('click', () => {
-      getCharacters(prevLink)
-    })
+    document.getElementById('prev-url').innerHTML = prevLink
   }
 
   const splitHeaderLinkNext = (headerLink) => {
@@ -304,16 +337,6 @@
     const arrayLinks = headerLink.split(',')
     const extractUrl = arrayLinks[1].split('<')[1].split('>')
     return extractUrl[0]
-  }
-
-  const removeNext = () => {
-    const paginationTop = document.querySelector('#pagination-top-next')
-    if (paginationTop.hasChildNodes()) paginationTop.removeChild(paginationTop.firstChild)
-  }
-
-  const removePrev = () => {
-    const paginationTop = document.querySelector('#pagination-top-prev')
-    if (paginationTop.hasChildNodes()) paginationTop.removeChild(paginationTop.firstChild)
   }
 
   const destroyChild = (idElement) => {
